@@ -1,0 +1,8 @@
+# to protect private information, store bond information in this file
+bonds.py
+
+# pycharm
+.idea/
+
+# python files
+__pycache__/
