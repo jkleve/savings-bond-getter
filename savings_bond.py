@@ -101,7 +101,7 @@ if __name__ == "__main__":
     """
 
     bond_data = list()
-    for bond in list_of_bonds:
+    for bond in list_of_bonds:   # TODO Create a task for each bond
         html = post_bond_to_treasury_direct(bond)
         data = extract_bond_data(html)
         bond_data.append(data)

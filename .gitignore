@@ -6,3 +6,4 @@ bonds.py
 
 # python files
 __pycache__/
+**.pyc
