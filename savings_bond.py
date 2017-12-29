@@ -81,6 +81,14 @@ def print_total(bonds):
           .format(total))
 
 
+def process_bond(args):
+    bond = args[0]
+    queue = args[1]
+
+    html = post_bond_to_treasury_direct(bond)
+    data = extract_bond_data(html)
+    queue.put(data)
+
 if __name__ == "__main__":
     from bonds import list_of_bonds
     """
@@ -100,11 +108,24 @@ if __name__ == "__main__":
                           Bond('zzzzzzzzzz', 'EE', 200, '03/2011', today),
     """
 
-    bond_data = list()
-    for bond in list_of_bonds:   # TODO Create a task for each bond
-        html = post_bond_to_treasury_direct(bond)
-        data = extract_bond_data(html)
-        bond_data.append(data)
+    # bond_data = list()
 
-    print_bonds(bond_data)
-    print_total(bond_data)
+    from multiprocessing import Manager, Pool
+    pool = Pool(len(list_of_bonds))
+    manager = Manager()
+    bond_data = manager.Queue()
+    pool.map(process_bond, zip(list_of_bonds, (bond_data,)*len(list_of_bonds)))
+
+    while bond_data.qsize() < len(list_of_bonds):
+        pass
+
+    # for bond in list_of_bonds:   # TODO Create a task for each bond
+    #     html = post_bond_to_treasury_direct(bond)
+    #     data = extract_bond_data(html)
+    #     bond_data.append(data)
+
+    print(bond_data)
+    while not bond_data.empty():
+        print(bond_data.get())
+    # print_bonds(bond_data)
+    # print_total(bond_data)
